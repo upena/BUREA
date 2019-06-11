@@ -1,0 +1,106 @@
+﻿@model IEnumerable<Question7.Models.DocumentViewModel>
+
+@{
+    ViewBag.Title = "Wireframe";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Wireframe</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<div class="row">
+    <div class="col-md-3">
+        <table class="table">
+            <tr>
+                <th style="background-color:darkgray;color:white;">
+                    @Html.DisplayNameFor(model => model.DocumentName)
+                </th>
+            </tr>
+
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        <table>
+                            <tr>
+                                <td>
+                                    <i class="fa fa-file fa-5x" style="color:gray;"></i>
+                                </td>
+                                <td style="width:5px;"></td>
+                                <td>
+                                    <h5>
+                                        @Html.DisplayFor(modelItem => item.DocumentName)
+                                    </h5>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="3" style="font-size:8px;">
+                                    @Html.DisplayFor(modelItem => item.CreationDate)
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <a href="@Url.Action("Edit", new { id = item.Id} )">
+                                        <span style="color:blue;" class="fa fa-pencil" data-toggle="tooltip" title="Edit"></span>
+                                    </a>
+                                    &nbsp;
+                                    <a type="button" onclick="ViewDetail('@item.Id')">
+                                        <span style="color:blue;" class="fa fa-eye" data-toggle="tooltip" title="View"></span>
+                                    </a>
+                                    &nbsp;
+                                    <a href="@Url.Action("Delete", new { id = item.Id} )">
+                                        <span style="color:darkred;" class="fa fa-trash" data-toggle="tooltip" title="Delete"></span>
+                                    </a>
+                                    @*@Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+                                        @Html.ActionLink("Details", "Details", new { id = item.Id }) |
+                                        @Html.ActionLink("Delete", "Delete", new { id = item.Id })*@
+                                </td>
+                            </tr>
+                        </table>
+                        @Html.HiddenFor(modelItem => item.DocumentText, new { id = "text_" + item.Id })
+                    </td>
+                    @*<td>
+                            @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
+                            @Html.ActionLink("Details", "Details", new { id=item.Id }) |
+                            @Html.ActionLink("Delete", "Delete", new { id=item.Id })
+                        </td>*@
+                </tr>
+            }
+
+        </table>
+    </div>
+    <div class="col-md-9">
+        <div class="col-md-6">
+            @Html.TextArea("documentTextPlain", new { rows = "20", style = "resize:none;width:100%;", @class = "form-control", @disabled = "disabled" })
+        </div>
+        <div class="col-md-6">
+            @Html.TextArea("documentText", new { rows = "20", style = "resize:none;width:100%;", @class = "form-control input-lg textarea-editor" })
+        </div>
+    </div>
+</div>
+
+
+
+@section Scripts
+{
+    <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.2/summernote.js"></script>
+    <link href="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.2/summernote.css" rel="stylesheet">
+    @Scripts.Render("~/bundles/Script-custom-editor")
+
+<script>
+    $(document).ready(function () {
+
+      $('#documentText').summernote('disable');
+
+    });
+
+    function ViewDetail(id) {
+        var textId = $("#text_" + id);
+        var cleanText = textId.val().replace(/<\/?[^>]+(>|$)/g, "").replace('&nbsp;', '\n').replace(' &nbsp;', '\n');
+        $('#documentTextPlain').val(cleanText);
+        $('#documentText').summernote("code", textId.val());
+    }
+</script>
+}
